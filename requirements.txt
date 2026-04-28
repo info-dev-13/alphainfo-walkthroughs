@@ -1,0 +1,13 @@
+# Core SDK — required for all walkthroughs that hit the public API
+alphainfo>=1.5.27
+
+# Numerics — required by every walkthrough
+numpy>=1.20
+
+# Optional, per walkthrough:
+# yfinance       — finance_walkthrough, finance_simple_compare (SPY history)
+# wfdb           — ecg_physionet_walkthrough (MIT-BIH PhysioNet records)
+# requests       — climate_*, energy_grid_uk_carbon (public APIs)
+#
+# Install all optional deps in one go:
+#   pip install -r requirements.txt yfinance wfdb requests

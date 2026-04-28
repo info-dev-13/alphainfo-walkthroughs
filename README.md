@@ -33,15 +33,52 @@ COMPARISON_VS_ALTERNATIVES.md  Honest head-to-head against `ruptures`,
 
 ## Reproducing the published numbers
 
-The walkthrough scripts call the alphainfo engine directly. The
-**engine itself is not public** — but the same analysis is available
-through two public surfaces:
+The walkthrough scripts in this repo call the alphainfo engine
+directly via an in-process `TestClient`. They depend on private
+modules (`api.app`, `recipes.intents`, `recipes.auto_diagnose`, ...)
+that ship with the engine repository — **not in this public repo**.
 
-1. **alphainfo SDK** — `pip install alphainfo`. Free API key with 50
-   monthly analyses at <https://www.alphainfo.io/register>. The SDK's
-   `client.analyze()` returns the same structural scores the
-   walkthroughs print.
-2. **Hosted API** — REST endpoints documented at
+That means: **most scripts in `walkthroughs/` are reference
+implementations, not turnkey demos.** They document methodology so
+the published numbers can be audited line by line, but they will
+fail with `ModuleNotFoundError` if you try to run them without
+the engine.
+
+To actually run an analysis end-to-end as an external reader, use
+one of these public surfaces:
+
+1. **`walkthroughs/finance_simple_compare.py`** — the only script in
+   this repo that's fully standalone. Depends only on the public SDK
+   (`pip install alphainfo`) and `yfinance`. Pulls real SPY data,
+   compares Q1 2020 (COVID crash) against Q4 2019 (calm baseline)
+   via the public API, prints scores. Set up:
+
+   ```bash
+   pip install -r requirements.txt yfinance
+   export ALPHAINFO_API_KEY=ai_your_key   # https://www.alphainfo.io/register
+   python walkthroughs/finance_simple_compare.py
+   ```
+
+2. **alphainfo SDK directly** — `pip install alphainfo`. Free tier:
+   50 analyses/month, no credit card, at
+   <https://www.alphainfo.io/register>. The SDK's three canonical
+   verbs cover most use cases:
+
+   ```python
+   from alphainfo import AlphaInfo
+   client = AlphaInfo(api_key="ai_...")
+
+   # Most common: "is the signal still like the baseline?"
+   result = client.compare(signal=current, baseline=normal, sampling_rate=1.0)
+
+   # No baseline? Triage:
+   result = client.detect_internal_change(signal=data, sampling_rate=1.0)
+
+   # Multi-channel:
+   result = client.analyze_vector(channels={"a": ..., "b": ...}, sampling_rate=1.0)
+   ```
+
+3. **REST API directly** — POST to `/v1/analyze` etc. Documented at
    <https://www.alphainfo.io/quickstart>. Curl-friendly, language-
    agnostic.
 

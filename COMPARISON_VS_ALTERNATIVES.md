@@ -21,7 +21,7 @@ and what the trade-offs look like.
 | "Where exactly did the mean step?" | **`ruptures.Pelt`** | Built for offline change-point segmentation. 100% recall on mean/vol shifts, but slowest. |
 | "Detect a mean step online with 30 lines and zero deps?" | **CUSUM** | 0.1ms per series, 60% recall on simple shifts. Use for cheap heuristics. |
 | "Distribution / spectrum / structure changed without mean changing?" | **alphainfo** | The only detector here that catches `distribution_shift` and `periodicity_shift` at all. |
-| "What KIND of change happened?" | **alphainfo** | Sole focus area. Probe libraries name the diagnosis (`auth_failure_burst`, `outlier_rate_increase`, …). See [BENCHMARKS.md](../benchmarks/BENCHMARKS.md). |
+| "What KIND of change happened?" | **alphainfo** | Sole focus area. Probe libraries name the diagnosis (`auth_failure_burst`, `outlier_rate_increase`, …). See [BENCHMARKS.md](BENCHMARKS.md). |
 
 If your problem fits the "mean stepped, where" mould, **just use
 `ruptures`**. If your problem is "something structural changed but I
@@ -154,7 +154,7 @@ alphainfo's actual differentiator is **diagnosis** — given a signal
 that changed, what KIND of change is it? `auth_failure_burst`?
 `outlier_rate_increase`? `vol_clustering`? That's the
 `auto_diagnose` recipe, which uses calibrated probe libraries per
-vertical. See [BENCHMARKS.md](../benchmarks/BENCHMARKS.md) — across 8
+vertical. See [BENCHMARKS.md](BENCHMARKS.md) — across 8
 verticals × 30 trials × ~13 probes each, alphainfo hits **rank-1 = 0.898,
 top-3 = 0.955, benign-spec = 0.935**. Neither ruptures nor CUSUM
 have a comparable feature.
